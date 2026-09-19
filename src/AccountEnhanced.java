@@ -10,82 +10,50 @@ public class AccountEnhanced {
     public AccountEnhanced(int accountNumber, String name, int age, double initialBalance, String accountType) {
         this.accountNumber = accountNumber;
         this.name = name;
+        this.age = age < 18 ? 18 : age;
 
-        if (age < 18) {
-            this.age = 18;
-        } else {
-            this.age = age;
-        }
-
-        if (accountType != null && (accountType.equalsIgnoreCase("Savings") || accountType.equalsIgnoreCase("Current"))) {
-            if (accountType.equalsIgnoreCase("Savings")) {
-                this.accountType = "Savings";
-            } else {
-                this.accountType = "Current";
-            }
+        if ("Current".equalsIgnoreCase(accountType)) {
+            this.accountType = "Current";
         } else {
             this.accountType = "Savings";
         }
 
-        double minBalance = getMinBalance();
-        if (initialBalance < minBalance) {
-            this.balance = minBalance;
-        } else {
-            this.balance = initialBalance;
-        }
-
+        double minBalance = "Current".equals(this.accountType) ? 1000.0 : 500.0;
+        this.balance = initialBalance < minBalance ? minBalance : initialBalance;
         this.status = "Active";
         this.pin = null;
     }
 
-    private double getMinBalance() {
-        if ("Savings".equalsIgnoreCase(this.accountType)) {
-            return 500.0;
-        } else if ("Current".equalsIgnoreCase(this.accountType)) {
-            return 1000.0;
-        }
-        return 500.0;
-    }
-
     public boolean deposit(double amount) {
-        if (!"Active".equalsIgnoreCase(this.status) || amount <= 0) {
+        if (!"Active".equals(status) || amount <= 0) {
             return false;
         }
-        this.balance += amount;
+        balance += amount;
         return true;
     }
 
-    public boolean withdraw(double amount, int pin) {
-        if (!"Active".equalsIgnoreCase(this.status)) {
+    public boolean withdraw(double amount, int inputPin) {
+        if (!"Active".equals(status) || amount <= 0 || pin == null || pin != inputPin) {
             return false;
         }
-        if (!verifyPin(pin)) {
+        // Allows current account withdrawals while preventing balance from going negative
+        double minAllowedBalance = "Current".equals(accountType) ? 0.0 : 500.0;
+        if (balance - amount < minAllowedBalance) {
             return false;
         }
-        if (amount <= 0) {
-            return false;
-        }
-        double minBalance = getMinBalance();
-        if ((this.balance - amount) < minBalance) {
-            return false;
-        }
-        this.balance -= amount;
+        balance -= amount;
         return true;
     }
 
     public boolean closeAccount() {
-        if ("Inactive".equalsIgnoreCase(this.status)) {
-            return false;
-        }
-        this.status = "Inactive";
+        if ("Inactive".equals(status)) return false;
+        status = "Inactive";
         return true;
     }
 
     public boolean reopenAccount() {
-        if ("Active".equalsIgnoreCase(this.status)) {
-            return false;
-        }
-        this.status = "Active";
+        if ("Active".equals(status)) return false;
+        status = "Active";
         return true;
     }
 
@@ -98,47 +66,17 @@ public class AccountEnhanced {
     }
 
     public boolean verifyPin(int pin) {
-        if (this.pin == null) {
-            return false;
-        }
-        return this.pin == pin;
+        return this.pin != null && this.pin == pin;
     }
 
     public boolean hasPin() {
         return this.pin != null;
     }
 
-    public int getAccountNumber() {
-        return accountNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public String getAccountType() {
-        return accountType;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAge(int age) {
-        if (age >= 18) {
-            this.age = age;
-        }
-    }
+    public int getAccountNumber() { return accountNumber; }
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public double getBalance() { return balance; }
+    public String getAccountType() { return accountType; }
+    public String getStatus() { return status; }
 }
