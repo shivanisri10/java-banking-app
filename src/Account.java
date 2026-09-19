@@ -1,6 +1,4 @@
-public class Account {
-    private static final double MIN_BALANCE_SAVINGS = 500.0;
-    private static final double MIN_BALANCE_CURRENT = 1000.0;
+public abstract class Account {
     private static final int MIN_AGE = 18;
     private static final int MIN_PIN = 1000;
     private static final int MAX_PIN = 9999;
@@ -9,33 +7,27 @@ public class Account {
     private String name;
     private int age;
     private double balance;
-    private String accountType;
     private String status;
     private Integer pin;
 
-    public Account(int accountNumber, String name, int age, double initialBalance, String accountType) throws IllegalArgumentException {
+    public Account(int accountNumber, String name, int age, double initialBalance) throws IllegalArgumentException {
         if (age < MIN_AGE) {
             throw new IllegalArgumentException("Age must be at least 18");
         }
-        if (!"Savings".equalsIgnoreCase(accountType) && !"Current".equalsIgnoreCase(accountType)) {
-            throw new IllegalArgumentException("Invalid account type");
-        }
-
-        String normalizedType = "Current".equalsIgnoreCase(accountType) ? "Current" : "Savings";
-        double minBalance = "Current".equals(normalizedType) ? MIN_BALANCE_CURRENT : MIN_BALANCE_SAVINGS;
-
-        if (initialBalance < minBalance) {
-            throw new IllegalArgumentException("Initial balance below minimum required");
-        }
-
         this.accountNumber = accountNumber;
         this.name = name;
         this.age = age;
-        this.balance = initialBalance;
-        this.accountType = normalizedType;
         this.status = "Active";
         this.pin = null;
+        this.balance = initialBalance;
+
+        if (initialBalance < getMinimumBalance()) {
+            throw new IllegalArgumentException("Initial balance below minimum required (" + getMinimumBalance() + ")");
+        }
     }
+
+    public abstract double getMinimumBalance();
+    public abstract String getAccountType();
 
     public void deposit(double amount) throws InvalidAmountException, InactiveAccountException {
         validateActive();
@@ -94,20 +86,19 @@ public class Account {
         return this.pin != null;
     }
 
-    private double getMinimumBalance() {
-        return "Current".equals(accountType) ? MIN_BALANCE_CURRENT : MIN_BALANCE_SAVINGS;
-    }
-
-    private void validateActive() throws InactiveAccountException {
+    protected void validateActive() throws InactiveAccountException {
         if (!"Active".equals(status)) {
             throw new InactiveAccountException("Account is inactive");
         }
+    }
+
+    protected void setBalance(double balance) {
+        this.balance = balance;
     }
 
     public int getAccountNumber() { return accountNumber; }
     public String getName() { return name; }
     public int getAge() { return age; }
     public double getBalance() { return balance; }
-    public String getAccountType() { return accountType; }
     public String getStatus() { return status; }
 }
