@@ -18,6 +18,32 @@ public class CurrentAccount extends Account {
         return "Current";
     }
 
+    @Override
+    public void withdraw(double amount, int pin) throws InvalidAmountException, InsufficientBalanceException, MinimumBalanceViolationException, InactiveAccountException, InvalidPinException {
+        validateActive();
+        if (hasPin() && !verifyPin(pin)) {
+            throw new InvalidPinException("Incorrect PIN");
+        }
+        if (amount <= 0) {
+            throw new InvalidAmountException("Withdrawal amount must be positive");
+        }
+
+        double currentBal = getBalance();
+        double availableOverdraft = getAvailableOverdraft();
+
+        if (amount > (currentBal + availableOverdraft)) {
+            throw new InsufficientBalanceException("Insufficient funds. Available: " + (currentBal + availableOverdraft) + " (including " + OVERDRAFT_LIMIT + " overdraft), Requested: " + amount);
+        }
+
+        if (amount <= currentBal) {
+            setBalance(currentBal - amount);
+        } else {
+            double remaining = amount - currentBal;
+            setBalance(0.0);
+            overdraftUsed += remaining;
+        }
+    }
+
     public double getOverdraftUsed() {
         return overdraftUsed;
     }
