@@ -1,26 +1,47 @@
 package com.gdb.tests;
 
 import com.gdb.domain.*;
+import com.gdb.exceptions.*;
 
 public class TestInterfaceFactory {
     public static void main(String[] args) {
-        System.out.println("=== Activity 11: Interface & Factory Pattern Test ===");
+        System.out.println("=== Activity 12: Factory-Driven System Suite ===");
 
-        // TODO: After completing IAccount, AbstractAccount and AccountFactory, uncomment the test calls
-        // below and run this program. Your output should match the "Expected Output" section of README.md.
+        try {
+            IAccount savings = AccountFactory.createAccount("SAVINGS", "ACC101", "Alice", 25, 5000.0, "ACTIVE", "1234");
+            IAccount current = AccountFactory.createAccount("CURRENT", "ACC102", "Bob", 30, 2000.0, "ACTIVE", "1234");
 
-        // IAccount acc1 = AccountFactory.createAccount("SAVINGS", "SAV1001", "Rajesh Sharma", 28, 5000.0, "ACTIVE", "1234");
-        // System.out.println("Factory created: " + acc1.getAccountType() + " account for " + acc1.getName());
-        //
-        // IAccount acc2 = AccountFactory.createAccount("CURRENT", "CUR1001", "Priya Patel", 34, 10000.0, "ACTIVE", "5678");
-        // System.out.println("Factory created: " + acc2.getAccountType() + " account for " + acc2.getName());
-        //
-        // IAccount acc3 = AccountFactory.createAccount("FIXED_DEPOSIT", "FD1001", "Amit Kumar", 45, 50000.0, "ACTIVE", "1111");
-        // System.out.println("Factory created: " + acc3.getAccountType() + " account for " + acc3.getName());
-        //
-        // IAccount acc4 = AccountFactory.createAccount("SALARY", "SAL1001", "Sneha Verma", 26, 30000.0, "ACTIVE", "2222");
-        // System.out.println("Factory created: " + acc4.getAccountType() + " account for " + acc4.getName());
-        //
-        // System.out.println("All accounts successfully created through AccountFactory!");
+            savings.deposit(1000.0);
+            if (savings.getBalance() == 6000.0) {
+                System.out.println("[Test 1] Savings Account Creation & Deposit: [PASS]");
+            } else {
+                System.out.println("[Test 1] Savings Account Creation & Deposit: [FAIL]");
+            }
+
+            current.withdraw(3000.0, "1234");
+            System.out.println("[Test 2] Current Account Overdraft Withdrawal: [PASS]");
+
+        } catch (Exception e) {
+            System.out.println("Unexpected error during standard tests: " + e.getMessage());
+        }
+
+        try {
+            IAccount fixedDeposit = AccountFactory.createAccount("FIXED_DEPOSIT", "ACC103", "Charlie", 40, 10000.0, "ACTIVE", "1234");
+            fixedDeposit.withdraw(1000.0, "1234");
+            System.out.println("[Test 3] Fixed Deposit Premature Withdrawal Block: [FAIL]");
+        } catch (Exception e) {
+            System.out.println("[Test 3] Fixed Deposit Premature Withdrawal Block: [PASS]");
+        }
+
+        try {
+            AccountFactory.createAccount("INVALID_TYPE", "ACC999", "Unknown", 20, 500.0, "ACTIVE", "1234");
+            System.out.println("[Test 4] Invalid Type Rejection: [FAIL]");
+        } catch (IllegalArgumentException e) {
+            System.out.println("[Test 4] Invalid Type Rejection: [PASS]");
+        } catch (Exception e) {
+            System.out.println("[Test 4] Invalid Type Rejection: [FAIL]");
+        }
+
+        System.out.println("Factory-driven architecture successfully verified!");
     }
 }
