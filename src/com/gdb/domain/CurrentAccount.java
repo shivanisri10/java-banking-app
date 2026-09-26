@@ -12,7 +12,7 @@ public class CurrentAccount extends AbstractAccount {
 
     @Override
     public void processDebit(double amount) throws AccountException {
-        if (amount > (balance + overdraftLimit)) {
+        if (amount > (this.balance + this.overdraftLimit)) {
             throw new InsufficientBalanceException("Overdraft limit exceeded");
         }
         this.balance -= amount;

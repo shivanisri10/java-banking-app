@@ -14,7 +14,7 @@ public class SalaryAccount extends AbstractAccount {
 
     @Override
     public void processDebit(double amount) throws AccountException {
-        if (amount > balance) {
+        if (amount > this.balance) {
             throw new InsufficientBalanceException("Insufficient funds in Salary account");
         }
         this.balance -= amount;

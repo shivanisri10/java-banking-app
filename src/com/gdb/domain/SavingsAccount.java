@@ -18,7 +18,7 @@ public class SavingsAccount extends AbstractAccount {
 
     @Override
     public void processDebit(double amount) throws AccountException {
-        if ((balance - amount) < minBalance) {
+        if ((this.balance - amount) < this.minBalance) {
             throw new MinimumBalanceViolationException("Cannot breach minimum balance of Rs " + minBalance);
         }
         this.balance -= amount;
