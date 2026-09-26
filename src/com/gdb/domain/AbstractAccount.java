@@ -2,10 +2,7 @@ package com.gdb.domain;
 
 import com.gdb.exceptions.*;
 
-/**
- * AbstractAccount - Defines shared template methods and forces subclasses to implement processDebit.
- */
-public abstract class AbstractAccount {
+public abstract class AbstractAccount implements IAccount {
     protected String accountNumber;
     protected String name;
     protected int age;
