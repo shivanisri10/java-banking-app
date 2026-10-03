@@ -50,8 +50,10 @@ public class AccountService {
     // ============================================================
     public IAccount openAccount(String type, String name, int age, double initialBalance)
             throws AccountException {
-        int accountNumber = nextAccountNumber++;
+        int accountNumber = nextAccountNumber;
         IAccount account = AccountFactory.createAccount(type, accountNumber, name, age, initialBalance);
+        // only consume the number once creation succeeded, so rejected opens don't leave gaps
+        nextAccountNumber++;
         accounts.put(accountNumber, account);
         return account;
     }
