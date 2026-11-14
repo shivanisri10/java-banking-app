@@ -14,7 +14,6 @@ public class TestAccountUI {
         TransactionLogger logger = new TransactionLogger(dest);
         AccountService service = new AccountService(logger);
 
-        // Verify backing operations used by AccountUI
         IAccount acc = service.openAccount("SAVINGS", "Alice Cooper", 28, 20000);
         acc.setPin(1234);
         System.out.println("[UI TEST] Opened: " + acc.getAccountInfo());

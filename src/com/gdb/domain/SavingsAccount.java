@@ -2,10 +2,6 @@ package com.gdb.domain;
 
 import com.gdb.exceptions.*;
 
-/**
- * Concrete SavingsAccount subclass extending Abstract Account and implementing IAccount.
- * Dynamically queries AccountRulesEngine for minimum balance and interest rates based on tenure.
- */
 public class SavingsAccount extends Account {
 
     public SavingsAccount(int accountNumber, String name, int age, double initialBalance)

@@ -2,9 +2,6 @@ package com.gdb.domain;
 
 import com.gdb.exceptions.*;
 
-/**
- * AccountFactory Creational Pattern supporting SAVINGS, CURRENT, and FIXEDDEPOSIT creation with dynamic rules.
- */
 public class AccountFactory {
 
     public static IAccount createAccount(String accountType, int accountNumber, String name, int age, double initialBalance)

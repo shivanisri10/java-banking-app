@@ -4,9 +4,6 @@ import com.gdb.command.TransactionCommand;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Bridge abstraction class decoupling high-level logger API from pluggable storage backends.
- */
 public class TransactionLogger {
     protected LogDestination destination;
 

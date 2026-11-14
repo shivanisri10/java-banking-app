@@ -13,7 +13,7 @@ public class TransactionLog {
         }
         @Override
         protected void writeStreamHeader() throws IOException {
-            // do not write header when appending to an existing stream
+            
         }
     }
 

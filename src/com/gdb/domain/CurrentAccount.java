@@ -2,10 +2,6 @@ package com.gdb.domain;
 
 import com.gdb.exceptions.*;
 
-/**
- * Concrete CurrentAccount subclass extending Abstract Account and implementing IAccount.
- * Dynamically queries AccountRulesEngine for minimum balance, interest rate, and overdraft facility.
- */
 public class CurrentAccount extends Account {
     private double overdraftUsed = 0.0;
 

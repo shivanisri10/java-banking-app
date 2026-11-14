@@ -2,10 +2,6 @@ package com.gdb.domain;
 
 import com.gdb.exceptions.*;
 
-/**
- * Enterprise Interface Contract defining standard public capabilities for all bank account implementations.
- * Integrates dynamic rules engine lookup based on customer account tenure.
- */
 public interface IAccount {
 
     void deposit(double amount) throws InactiveAccountException, InvalidAmountException;

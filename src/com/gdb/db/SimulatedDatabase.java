@@ -2,9 +2,6 @@ package com.gdb.db;
 
 import java.util.*;
 
-/**
- * In-memory simulated database table engine for logging and persistence testing.
- */
 public class SimulatedDatabase {
     private final Map<String, List<Object>> tables = new HashMap<>();
 

@@ -3,19 +3,13 @@ package com.gdb.domain;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Account Rules Engine with Properties File Configuration.
- * Singleton pattern with hot-reload capability.
- * Dynamic rule sets loaded from external properties files.
- */
 public class AccountRulesEngine {
     
     private static AccountRulesEngine instance;
     private Map<String, Map<Integer, Rule>> rulesMap;
     private boolean loaded = false;
     private String lastLoadTime;
-    
-    // Rule class - holds all data for a tenure bucket
+
     public static class Rule {
         private double minBalance;
         private double interestRate;
@@ -59,10 +53,7 @@ public class AccountRulesEngine {
         }
         return instance;
     }
-    
-    /**
-     * Load all rules from properties files.
-     */
+
     public synchronized void loadAllRules() {
         rulesMap = new ConcurrentHashMap<>();
         String[] accountTypes = {"SAVINGS", "CURRENT", "FIXEDDEPOSIT", "SALARY"};
@@ -84,18 +75,13 @@ public class AccountRulesEngine {
         System.out.println("   Loaded at: " + lastLoadTime);
         System.out.println("   Account types: " + rulesMap.keySet());
     }
-    
-    /**
-     * Hot reload - reload all rules without restarting the application.
-     */
+
     public synchronized void reloadRules() {
         System.out.println("\n🔄 Reloading rules...");
         loadAllRules();
         System.out.println("✅ Rules reloaded successfully!");
     }
-    
-    // ===== Helper Methods =====
-    
+
     private int getTenureBucket(int tenureYears) {
         if (tenureYears < 1) return 0;
         else if (tenureYears < 3) return 1;
@@ -122,9 +108,7 @@ public class AccountRulesEngine {
             default: return "UNKNOWN";
         }
     }
-    
-    // ===== Public API Methods =====
-    
+
     public double getMinimumBalance(String accountType, int tenureYears) {
         Rule rule = getRule(accountType, tenureYears);
         return rule != null ? rule.getMinBalance() : 0;
@@ -165,10 +149,7 @@ public class AccountRulesEngine {
     public String getLastLoadTime() {
         return lastLoadTime;
     }
-    
-    /**
-     * Print all loaded rules.
-     */
+
     public void printAllRules() {
         System.out.println("\n=== ALL ACCOUNT RULES (FROM PROPERTIES FILES) ===");
         for (String type : rulesMap.keySet()) {
@@ -179,8 +160,7 @@ public class AccountRulesEngine {
                 Rule rule = entry.getValue();
                 String bucketName = getTenureBucketName(bucket);
                 System.out.printf("  %-25s -> %s%n", bucketName, rule);
-                
-                // Print additional features if any
+
                 if (!rule.getAdditionalFeatures().isEmpty()) {
                     System.out.print("    Features: ");
                     for (Map.Entry<String, Object> feat : rule.getAdditionalFeatures().entrySet()) {
@@ -191,10 +171,7 @@ public class AccountRulesEngine {
             }
         }
     }
-    
-    /**
-     * Get count of account types loaded.
-     */
+
     public int getAccountTypeCount() {
         return rulesMap.size();
     }

@@ -10,9 +10,6 @@ import com.gdb.repository.RepositoryFactory;
 
 import java.util.*;
 
-/**
- * Service orchestrating banking operations, business rules validation, and repository persistence.
- */
 public class AccountService {
 
     private final AccountRepository accountRepository;

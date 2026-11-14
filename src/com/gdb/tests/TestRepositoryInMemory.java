@@ -18,47 +18,60 @@ public class TestRepositoryInMemory {
 
         AccountService service = new AccountService(accountRepo, txnRepo, logger);
 
-        // ============================================================
-        // 📝 STEP 17: Test Account Repository CRUD
-        // ============================================================
-        // STEP 17: Test Account Repository CRUD
-        IAccount sample = AccountFactory.createAccount("SAVINGS", 9001, "Test User", 20, 10000);
-        sample.setPin(1234);
-        accountRepo.save(sample);
-        System.out.println("Account saved: " + (accountRepo.findById(9001) != null));
-        System.out.println("Account count: " + accountRepo.findAll().size());
-        sample.deposit(500);
-        accountRepo.update(sample);
-        System.out.println("Updated balance: " + accountRepo.findById(9001).getBalance());
-        System.out.println("Account exists: " + accountRepo.exists(9001));
-        System.out.println("Next account number: " + accountRepo.nextAccountNumber());
+        IAccount acc1 = service.openAccount("SAVINGS", "Rajesh Sharma", 30, 50000.0, 2);
+        IAccount acc2 = service.openAccount("CURRENT", "Priya Patel", 28, 40000.0, 0);
+        acc1.setPin(1234);
+        acc2.setPin(5678);
 
-        // STEP 18: Test Transaction Repository Operations
-        Transaction sampleTxn = new Transaction(
-                Transaction.generateId(), java.time.LocalDateTime.now(), 9001,
-                TransactionType.DEPOSIT, 500, sample.getBalance(), "SUCCESS",
-                "Repository test", 0, 0);
-        txnRepo.save(sampleTxn);
-        System.out.println("Transactions saved: " + txnRepo.findAll().size());
-        System.out.println("Transactions for 9001: " + txnRepo.findByAccount(9001).size());
-        txnRepo.clear();
-        System.out.println("Transactions after clear: " + txnRepo.findAll().size());
+        System.out.println("[TEST 1] Account Creation & Auto ID Generation:");
+        System.out.println("  acc1 ID = " + acc1.getAccountNumber() + " (Expected 1001)");
+        System.out.println("  acc2 ID = " + acc2.getAccountNumber() + " (Expected 1002)");
+        assert acc1.getAccountNumber() == 1001 : "acc1 should have ID 1001";
+        assert acc2.getAccountNumber() == 1002 : "acc2 should have ID 1002";
+        System.out.println("  -> PASSED");
 
-        // STEP 19: Test Service Integration With Repositories
-        IAccount first = service.openAccount("SAVINGS", "Shivani", 20, 20000);
-        IAccount second = service.openAccount("SAVINGS", "Student Two", 21, 20000);
-        first.setPin(1234);
-        second.setPin(2345);
-        int firstNo = first.getAccountNumber();
-        int secondNo = second.getAccountNumber();
-        service.deposit(firstNo, 3000);
-        service.withdraw(firstNo, 1000, 1234);
-        service.transfer(firstNo, secondNo, 2000, 1234);
-        System.out.println("Service accounts opened: " + service.getAllAccounts().size());
-        System.out.println("First account balance: " + service.getAccount(firstNo).getBalance());
-        System.out.println("Second account balance: " + service.getAccount(secondNo).getBalance());
-        System.out.println("Service transaction records: " + service.getTransactionRecords().size());
+        System.out.println("\n[TEST 2] Deposit via Service:");
+        Transaction depTxn = service.deposit(1001, 10000.0);
+        System.out.println("  " + depTxn);
+        assert acc1.getBalance() == 60000.0 : "Balance after deposit should be 60000.0";
+        System.out.println("  -> PASSED");
 
-        System.out.println("Activity 21 Repository tests complete.");
+        System.out.println("\n[TEST 3] Withdraw via Service:");
+        Transaction wthTxn = service.withdraw(1001, 5000.0, 1234);
+        System.out.println("  " + wthTxn);
+        assert acc1.getBalance() == 55000.0 : "Balance after withdraw should be 55000.0";
+        System.out.println("  -> PASSED");
+
+        System.out.println("\n[TEST 4] Transfer via Service:");
+        Transaction trfTxn = service.transfer(1001, 1002, 10000.0, 1234);
+        System.out.println("  " + trfTxn);
+        assert acc1.getBalance() == 45000.0 : "Sender balance should be 45000.0";
+        assert acc2.getBalance() == 50000.0 : "Receiver balance should be 50000.0";
+        System.out.println("  -> PASSED");
+
+        System.out.println("\n[TEST 5] Repository Queries:");
+        List<IAccount> allAccs = service.getAllAccounts();
+        System.out.println("  Total accounts in repo: " + allAccs.size() + " (Expected 2)");
+        assert allAccs.size() == 2 : "Should have 2 accounts";
+
+        List<Transaction> allTxns = service.getTransactionRecords();
+        System.out.println("  Total transactions in repo: " + allTxns.size() + " (Expected 3)");
+        assert allTxns.size() == 3 : "Should have 3 transactions";
+
+        List<Transaction> acc1Txns = service.getTransactionRecords(1001);
+        System.out.println("  Transactions for account 1001: " + acc1Txns.size() + " (Expected 3)");
+        assert acc1Txns.size() == 3 : "Account 1001 should have 3 transactions";
+        System.out.println("  -> PASSED");
+
+        System.out.println("\n[TEST 6] RepositoryFactory Mode:");
+        String mode = RepositoryFactory.getPersistenceMode();
+        System.out.println("  Persistence mode: " + mode);
+        AccountRepository factoryAccRepo = RepositoryFactory.getAccountRepository();
+        assert factoryAccRepo != null : "Factory should return non-null repo";
+        System.out.println("  -> PASSED");
+
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("  ALL ACTIVITY 21 IN-MEMORY REPOSITORY TESTS PASSED!");
+        System.out.println("=".repeat(60));
     }
 }

@@ -3,9 +3,6 @@ package com.gdb.domain;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * Model class representing a financial transaction in the GDB banking system.
- */
 public class Transaction implements Serializable {
     private static final long serialVersionUID = 1L;
     private static long counter = 0;

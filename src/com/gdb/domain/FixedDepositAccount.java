@@ -2,10 +2,6 @@ package com.gdb.domain;
 
 import com.gdb.exceptions.*;
 
-/**
- * Concrete FixedDepositAccount subclass extending Abstract Account and implementing IAccount.
- * Dynamically queries AccountRulesEngine for minimum balance, interest rate, lock-in period, and penalty rate.
- */
 public class FixedDepositAccount extends Account {
     private String maturityDate = "2027-08-28";
     private double interestEarned = 0.0;

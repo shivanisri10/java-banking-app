@@ -5,19 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-/**
- * Loads account rules from properties files.
- * Each account type has its own properties file.
- */
 public class AccountRulesPropertiesLoader {
     
     private static final String CONFIG_PATH = "/config/rules/";
-    
-    /**
-     * Load rules for a specific account type from properties file.
-     * @param accountType Account type (SAVINGS, CURRENT, etc.)
-     * @return Map of tenure bucket → Rule
-     */
+
     public static Map<Integer, AccountRulesEngine.Rule> loadRules(String accountType) {
         Map<Integer, AccountRulesEngine.Rule> rules = new HashMap<>();
         String propertyFile = CONFIG_PATH + accountType.toLowerCase() + ".properties";
@@ -40,34 +31,29 @@ public class AccountRulesPropertiesLoader {
             Properties props = new Properties();
             props.load(input);
             input.close();
-            
-            // Get all bucket keys from properties (e.g., new, standard, premium, privilege)
+
             String[] bucketKeys = getBucketKeys(props);
             
             for (String bucketKey : bucketKeys) {
-                // Read tenure value
+                
                 int tenure = Integer.parseInt(
                     props.getProperty("tenure.bucket." + bucketKey, "0"));
-                
-                // Read basic properties
+
                 double minBalance = Double.parseDouble(
                     props.getProperty("min.balance." + bucketKey, "0"));
                 double interestRate = Double.parseDouble(
                     props.getProperty("interest.rate." + bucketKey, "0"));
                 String featureName = props.getProperty(
                     "feature.name." + bucketKey, "Unknown");
-                
-                // Create Rule object
+
                 AccountRulesEngine.Rule rule = 
                     new AccountRulesEngine.Rule(minBalance, interestRate, featureName);
-                
-                // Load additional features dynamically by looking for keys ending with .<bucketKey>
+
                 String suffix = "." + bucketKey;
                 for (String key : props.stringPropertyNames()) {
                     if (key.endsWith(suffix)) {
                         String prefix = key.substring(0, key.length() - suffix.length());
-                        
-                        // Skip standard attributes already handled
+
                         if (prefix.equals("min.balance") || prefix.equals("interest.rate") ||
                             prefix.equals("feature.name") || prefix.equals("tenure.bucket")) {
                             continue;
@@ -95,11 +81,7 @@ public class AccountRulesPropertiesLoader {
         
         return rules;
     }
-    
-    /**
-     * Converts dot-separated property names to camelCase.
-     * e.g., "overdraft.limit" -> "overdraftLimit"
-     */
+
     private static String toCamelCase(String s) {
         StringBuilder sb = new StringBuilder();
         boolean capitalizeNext = false;
@@ -140,21 +122,14 @@ public class AccountRulesPropertiesLoader {
             return value;
         }
     }
-    
-    /**
-     * Extract all bucket keys from properties.
-     * Keys like: tenure.bucket.new, tenure.bucket.standard, etc.
-     */
+
     private static String[] getBucketKeys(Properties props) {
         return props.stringPropertyNames().stream()
             .filter(key -> key.startsWith("tenure.bucket."))
             .map(key -> key.substring("tenure.bucket.".length()))
             .toArray(String[]::new);
     }
-    
-    /**
-     * Default rules if properties file not found.
-     */
+
     private static Map<Integer, AccountRulesEngine.Rule> getDefaultRules(String accountType) {
         Map<Integer, AccountRulesEngine.Rule> defaultRules = new HashMap<>();
         AccountRulesEngine.Rule defaultRule = 

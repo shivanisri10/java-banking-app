@@ -20,17 +20,14 @@ public class TestAccountRulesEngineProperties {
         System.out.println("=".repeat(60));
         
         AccountRulesEngine engine = AccountRulesEngine.getInstance();
-        
-        // Show loaded status
+
         System.out.println("\n📋 Engine Status:");
         System.out.println("  Loaded: " + engine.isLoaded());
         System.out.println("  Load Time: " + engine.getLastLoadTime());
         System.out.println("  Account Types: " + engine.getAccountTypeCount());
-        
-        // Print all rules
+
         engine.printAllRules();
-        
-        // Test 1: Savings Account
+
         printHeader("Test 1: Savings Account Rules (From Properties)");
         System.out.printf("%-12s %-20s %-15s %-15s %-20s%n", 
                          "Tenure", "Bucket", "Min Balance", "Interest", "Feature");
@@ -45,8 +42,7 @@ public class TestAccountRulesEngineProperties {
             System.out.printf("%d years     %-18s ₹%,9.0f    %.2f%%        %-20s%n",
                              tenure, bucket, minBal, interest, feature);
         }
-        
-        // Test 2: Current Account
+
         printHeader("Test 2: Current Account Rules (From Properties)");
         System.out.printf("%-12s %-20s %-15s %-15s %-15s%n", 
                          "Tenure", "Bucket", "Min Balance", "Interest", "Overdraft");
@@ -61,8 +57,7 @@ public class TestAccountRulesEngineProperties {
             System.out.printf("%d years     %-18s ₹%,9.0f    %.2f%%        ₹%,9.0f%n",
                              tenure, bucket, minBal, interest, overdraft);
         }
-        
-        // Test 3: Fixed Deposit
+
         printHeader("Test 3: Fixed Deposit Rules (From Properties)");
         System.out.printf("%-12s %-20s %-15s %-15s %-15s %-15s%n", 
                          "Tenure", "Bucket", "Min Balance", "Interest", "Lock-in", "Penalty");
@@ -77,8 +72,7 @@ public class TestAccountRulesEngineProperties {
             System.out.printf("%d years     %-18s ₹%,9.0f    %.2f%%        %d months    %.2f%%%n",
                              tenure, bucket, minBal, interest, lockin, penalty);
         }
-        
-        // Test 4: Salary Account
+
         printHeader("Test 4: Salary Account Rules (From Properties)");
         System.out.printf("%-12s %-20s %-15s %-15s %-15s %-30s%n", 
                          "Tenure", "Bucket", "Min Balance", "Interest", "Status", "Benefits");
@@ -93,8 +87,7 @@ public class TestAccountRulesEngineProperties {
             System.out.printf("%d years     %-18s ₹%,9.0f    %.2f%%        %-15s %-30s%n",
                              tenure, bucket, minBal, interest, status, benefits);
         }
-        
-        // Test 5: Hot Reload Demonstration
+
         printHeader("Test 5: Hot Reload Feature");
         System.out.println("The rules engine supports hot reloading!");
         System.out.println("To test hot reload:");
@@ -106,8 +99,7 @@ public class TestAccountRulesEngineProperties {
         System.out.println("   - Updating interest rates without deployment");
         System.out.println("   - A/B testing different rule sets");
         System.out.println("   - Fixing configuration errors quickly");
-        
-        // Test 6: Properties File Benefits
+
         printHeader("Test 6: Properties File vs Hardcoded");
         System.out.println("✅ Configuration Externalization Benefits:");
         System.out.println("   1. No code changes for rule updates");
